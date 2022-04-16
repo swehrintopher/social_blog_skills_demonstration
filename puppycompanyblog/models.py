@@ -7,14 +7,14 @@ from datetime import datetime
 def load_user(user_id):
     return User.query.get(user_id)
 
-class User(db.model,UserMixin):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
-    id = db.column(db.Integer,primary_key=True)
-    profile_image = db.Column(db.String(64),nullable=False,default='default_profile.ng')
+    id = db.Column(db.Integer,primary_key=True)
+    profile_image = db.Column(db.String(64),nullable=False,default='default_profile.png')
     email = db.Column(db.String(64),unique=True,index=True)
     username = db.Column(db.String(64),unique=True,index=True)
-    password_has = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
 
     posts = db.relationship('BlogPost',backref='author',lazy=True)
 
@@ -29,7 +29,7 @@ class User(db.model,UserMixin):
     def __repr__(self):
         return f"Username {self.username}"
 
-class BlogPost(db.model):
+class BlogPost(db.Model):
     users = db.relationship(User)
 
     id = db.Column(db.Integer,primary_key=True)

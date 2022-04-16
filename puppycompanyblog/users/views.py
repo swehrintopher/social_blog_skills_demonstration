@@ -1,15 +1,24 @@
+### To Do
+# Account Page doesn't change who its addressed to when user updates
+# Flash messages when log in doesn't properly work
+# Error when registering due to user already registered
+# Check if updating pictures works
+
+
 from flask import render_template,url_for,flash,redirect,request,Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from puppycompanyblog import db
+from werkzeug.security import generate_password_hash,check_password_hash
 from puppycompanyblog.models import User, BlogPost
-from puppycompanyblog.users.forms import RegistrationForm, LoginForm, UpdateUserForm
+from puppycompanyblog.user is not Noneusers.forms import RegistrationForm, LoginForm, UpdateUserForm
 from puppycompanyblog.users.picture_handler import add_profile_pic
+
 
 users= Blueprint('users', __name__)
 
 ### Register
 @users.route("/register",methods=['GET','POST'])
-def regiser():
+def register():
     form = RegistrationForm()
 
     if form.validate_on_submit():
@@ -32,7 +41,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
 
-        if user.check_password(form.password.data) and user is not None:
+        if user is not None and user.check_password(form.password.data):
             login_user(user)
             flash('Login Success!')
 
@@ -57,7 +66,6 @@ def account():
     form = UpdateUserForm()
 
     if form.validate_on_submit():
-        
         if form.picture.data:
             username = current_user.username
             pic = add_profile_pic(form.picture.data,username)
